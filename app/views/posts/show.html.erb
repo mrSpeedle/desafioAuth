@@ -1,0 +1,39 @@
+<p style="color: green"><%= notice %></p>
+<%= render @post %>
+
+<h2>Comentarios</h2>
+<% if user_signed_in? %>
+  <%= form_with(model: [@post, @post.comments.build], local: true) do |form| %>
+    <div>
+      <%= form.text_area :body, placeholder: "Escribe tu comentario", rows: 3 %>
+    </div>
+    <div>
+      <%= form.submit "Comentar" %>
+    </div>
+  <% end %>
+<% else %>
+  <p>Debes <%= link_to 'iniciar sesión', new_user_session_path %> para comentar.</p>
+<% end %>
+
+<h3>Todos los comentarios</h3>
+<% @post.comments.each do |comment| %>
+  <p>
+    <% if comment.user %>
+      <strong><%= comment.user.name %>:</strong>
+    <% else %>
+      <strong>Anónimo:</strong>
+    <% end %>
+    <%= comment.body %>
+  </p>
+<% end %>
+
+
+<div>
+  <%= link_to "Back to posts", posts_path %>
+  <% if user_signed_in? %>
+    <% if current_user.id == @post.user_id %>
+      <%= link_to "Edit this post", edit_post_path(@post) %> |
+      <%= button_to "Destroy this post", @post, method: :delete %>
+    <% end %>
+  <% end %>
+</div>
